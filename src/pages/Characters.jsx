@@ -15,7 +15,7 @@ export const Characters = () => {
       try {
 
         setLoading(true);
-        // Usar directamente apiClient en lugar de actions
+        // Llamada a la API (apiClient)
         const response = await apiClient.getCharacters();
 
         if (response && response.results) {
