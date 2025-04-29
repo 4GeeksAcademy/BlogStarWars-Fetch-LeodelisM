@@ -5,33 +5,39 @@ import { useActions } from '../store.js';
 import Loader from '../components/Loader';
 
 export const CharacterDetail = () => {
-  // 1. Obtener el ID del personaje de la URL y el navigate para redireccionar
+  // Obtener el ID del personaje de la URL y el navigate para redireccionar
   const { id } = useParams();
+
   const navigate = useNavigate();
   
-  // 2. Estados locales para manejar carga, error y datos
+  // Estados locales para manejar carga, error y datos
   const [character, setCharacter] = useState(null);
+
   const [loading, setLoading] = useState(true);
+
   const [error, setError] = useState(null);
   
-  // 3. Acceder al estado global y dispatch
+  // Acceder al estado global y dispatch
   const { store, dispatch } = useGlobalReducer();
-  const actions = useActions(dispatch);
   
-  // 4. Verificar si el personaje está en favoritos
+  const actions = useActions(dispatch);
+
+  // Verificar si el personaje está en favoritos
   const isFavorite = store.favorites.some(fav => 
     fav.uid === id && fav.type === "characters"
   );
   
-  // 5. Obtener URL de la imagen del personaje
+  // Obtener URL de la imagen del personaje
   const imgUrl = actions.getUrlImgCharacter(id);
   
-  // 6. Función para obtener datos del personaje
+  // Función para obtener datos del personaje
   useEffect(() => {
     const fetchCharacter = async () => {
+
       try {
+
         setLoading(true);
-        // Llamada a la API SWAPI.tech
+        // Llamada a la API
         const response = await fetch(`https://www.swapi.tech/api/people/${id}`);
         
         if (!response.ok) {
@@ -50,7 +56,7 @@ export const CharacterDetail = () => {
     fetchCharacter();
   }, [id]);
   
-  // 7. Función para manejar favoritos
+  // Función para manejar favoritos
   const handleToggleFavorite = () => {
     if (isFavorite) {
       actions.removeFavorite(id, "characters");
@@ -66,7 +72,7 @@ export const CharacterDetail = () => {
     }
   };
   
-  // 8. Renderizado condicional según el estado
+  // Renderizado condicional según el estado
   
   // Si está cargando
   if (loading) {
