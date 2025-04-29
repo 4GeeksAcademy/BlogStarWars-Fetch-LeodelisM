@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import useGlobalReducer from '../hooks/useGlobalReducer.jsx';
 import { useActions } from '../store'; // Importar directamente useActions
 
-
 const Navbar = () => {
   const { store, dispatch } = useGlobalReducer();
   // Obtener las acciones directamente
@@ -15,6 +14,33 @@ const Navbar = () => {
   // Calcular el número de favoritos 
   const favoritesCount = store && store.favorites ? store.favorites.length : 0;
   
+  // Función para obtener una etiqueta legible del tipo
+  const getTypeLabel = (type) => {
+    switch (type) {
+      case 'characters':
+        return 'Personaje';
+      case 'planets':
+        return 'Planeta';
+      case 'vehicles':
+        return 'Vehículo';
+      default:
+        return type;
+    }
+  };
+
+  // Función para obtener imagen por defecto según el tipo
+  const getDefaultImage = (type, uid) => {
+    switch (type) {
+      case 'characters':
+        return `https://raw.githubusercontent.com/tbone849/star-wars-guide/refs/heads/master/build/assets/img/characters/${uid}.jpg`;
+      case 'vehicles':
+        return `https://raw.githubusercontent.com/tbone849/star-wars-guide/refs/heads/master/build/assets/img/vehicles/${uid}.jpg`;
+      case 'planets':
+        return `https://raw.githubusercontent.com/tbone849/star-wars-guide/refs/heads/master/build/assets/img/planets/${uid}.jpg`;
+      default:
+        return "https://placehold.co/40?text=Star+Wars";
+    }
+  };
   
   // Manejar clic fuera del dropdown para cerrarlo
   useEffect(() => {
@@ -46,7 +72,13 @@ const Navbar = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container">
-        <Link className="navbar-brand" to="/">Star Wars Blog</Link>
+        <div className="navbar-brand">
+          <img 
+            src="src/assets/img/LogoBlancoStarWars.png" 
+            alt="Star Wars Logo" 
+            height="90" 
+          />
+        </div>
         <button 
           className="navbar-toggler" 
           type="button" 
@@ -60,28 +92,29 @@ const Navbar = () => {
         </button>
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav me-auto">
-            <li className="nav-item">
-              <Link className="nav-link" to="/">Home</Link>
+            {/* Enlaces convertidos en botones */}
+            <li className="nav-item mx-1">
+              <Link className="btn btn-outline-warning" to="/">Home</Link>
             </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/characters">Personajes</Link>
+            <li className="nav-item mx-1">
+              <Link className="btn btn-outline-primary" to="/characters">Personajes</Link>
             </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/planets">Planetas</Link>
+            <li className="nav-item mx-1">
+              <Link className="btn btn-outline-success" to="/planets">Planetas</Link>
             </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/vehicles">Vehículos</Link>
+            <li className="nav-item mx-1">
+              <Link className="btn btn-outline-light" to="/vehicles">Vehículos</Link>
             </li>
           </ul>
           
           {/* Dropdown de favoritos */}
           <div className="dropdown" ref={dropdownRef}>
             <button 
-              className="btn btn-outline-light dropdown-toggle position-relative"
+              className="btn btn-outline-warning dropdown-toggle position-relative"
               onClick={() => setDropdownOpen(!dropdownOpen)}
               type="button"
             >
-              <i className="fas fa-heart me-1"></i> Favoritos
+              <i className="fas fa-star me-1"></i> Favoritos
               {favoritesCount > 0 && (
                 <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                   {favoritesCount}
@@ -192,34 +225,6 @@ const Navbar = () => {
       </div>
     </nav>
   );
-};
-
-// Función para obtener una etiqueta legible del tipo
-const getTypeLabel = (type) => {
-  switch (type) {
-    case 'characters':
-      return 'Personaje';
-    case 'planets':
-      return 'Planeta';
-    case 'vehicles':
-      return 'Vehículo';
-    default:
-      return type;
-  }
-};
-
-// Función para obtener imagen por defecto según el tipo
-const getDefaultImage = (type, uid) => {
-  switch (type) {
-    case 'characters':
-      return `https://raw.githubusercontent.com/tbone849/star-wars-guide/refs/heads/master/build/assets/img/characters/${uid}.jpg`;
-    case 'vehicles':
-      return `https://raw.githubusercontent.com/tbone849/star-wars-guide/refs/heads/master/build/assets/img/vehicles/${uid}.jpg`;
-    case 'planets':
-      return `https://raw.githubusercontent.com/tbone849/star-wars-guide/refs/heads/master/build/assets/img/planets/${uid}.jpg`;
-    default:
-      return "https://placehold.co/40?text=Star+Wars";
-  }
 };
 
 export default Navbar;
