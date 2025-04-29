@@ -58,7 +58,7 @@ export const Card = ({ name, uid, type }) => {
   };
   
   return (
-    <div className="card h-100">
+    <div className="card h-100 border-secondary-subtle ms-1 me-1">
       <img
         className="card-img-top img-fluid"
         src={imgSrc}
@@ -75,7 +75,7 @@ export const Card = ({ name, uid, type }) => {
         <div className="mt-auto d-flex align-items-center">
           <button
             type="button"
-            className="btn btn-outline-info flex-grow-1"
+            className="btn btn-outline-primary flex-grow-1"
             onClick={() => navigate(`/${type}/${uid}`)}
           >
             Ver detalles

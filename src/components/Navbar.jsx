@@ -75,7 +75,7 @@ const Navbar = () => {
         <div className="navbar-brand">
           <img 
             src="src/assets/img/LogoBlancoStarWars.png" 
-            alt="Star Wars Logo" 
+            alt="Star Wars" 
             height="90" 
           />
         </div>

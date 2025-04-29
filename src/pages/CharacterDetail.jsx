@@ -99,8 +99,8 @@ export const CharacterDetail = () => {
   
   // Renderizado normal con datos
   return (
-    <div className="card my-4">
-      <div className="card-header bg-dark text-white">
+    <div className="container-fluid px-4 mt-5" style={{ maxWidth: "1350px", margin: "0 auto" }}>
+      <div className="card-header bg-dark text-white mb-3  border-radius: 16px;">
         <h2>{character.properties.name}</h2>
       </div>
       <div className="card-body">

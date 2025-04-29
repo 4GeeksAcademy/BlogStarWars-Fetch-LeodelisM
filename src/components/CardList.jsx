@@ -128,7 +128,6 @@ export const CardList = () => {
     return (
       <div className="my-4">
         <h2 className="mb-3">{typeNames[type]} de Star Wars</h2>
-        
         {/* Sin datos */}
         {items.length === 0 ? (
           <div className="alert alert-info">
