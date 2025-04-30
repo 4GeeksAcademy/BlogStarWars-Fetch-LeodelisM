@@ -3,7 +3,7 @@ import useGlobalReducer from '../hooks/useGlobalReducer.jsx';
 import Card from '../components/Card'; // Importamos el componente Card
 import { useActions } from '../store'; // Importación directa de useActions
 
-const Favorites = () => {
+export const Favorites = () => {
   const { store, dispatch } = useGlobalReducer();
   const actions = useActions(dispatch); // Obtenemos acciones directamente
   
@@ -82,5 +82,3 @@ const Favorites = () => {
     </div>
   );
 };
-
-export default Favorites;

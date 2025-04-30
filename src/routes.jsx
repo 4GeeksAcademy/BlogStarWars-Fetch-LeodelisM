@@ -6,14 +6,19 @@ import {
     Route,
 } from "react-router-dom";
 import { Layout } from "./pages/Layout";
-import { Home } from "./pages/Home";
 import { Single } from "./pages/Single";
 import { Demo } from "./pages/Demo";
 
+//Pages
+import { Home } from "./pages/Home";
 import { Characters } from "./pages/Characters";
 import { CharacterDetail }  from "./pages/CharacterDetail";
 import { Planets } from "./pages/Planets";
-import Favorites from "./pages/Favorites";
+import { PlanetDetail } from "./pages/PlanetDetail"
+import { Vehicles } from "./pages/Vehicles";
+import { VehicleDetail } from "./pages/VehicleDetail"
+
+import { Favorites } from "./pages/Favorites";
 
 
 
@@ -32,11 +37,17 @@ export const router = createBrowserRouter(
         <Route path= "/" element={<Home />} />
         <Route path="/single/:theId" element={ <Single />} />  {/* Dynamic route for single items */}
         <Route path="/demo" element={<Demo />} />
+        
         <Route path="/characters" element={<Characters />} />
         <Route path="/planets" element={<Planets />} />
+        <Route path="/vehicles" element={<Vehicles />} />
+
         <Route path="/favorites" element={<Favorites />} />
 
         <Route path="/characters/:id" element={<CharacterDetail />} />
+        <Route path="/planets/:id" element={<PlanetDetail />} />
+        <Route path="/vehicles/:id" element={<VehicleDetail />} />
+
 
       </Route>
     )

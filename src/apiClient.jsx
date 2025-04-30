@@ -38,7 +38,24 @@ export const getPlanets = async () => {
   }
 };
 
-
+// Función para obtener la lista de planetas en la page Planets
+export const getVehicles = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/vehicles`);
+ 
+    // Convertir la respuesta a JSON
+    if (!response.ok) {
+      throw new Error(`Error HTTP: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return data; // Devuelve el objeto completo, no response.data
+    
+  } catch (error) {
+    console.error('Error al obtener vehiculos/naves:', error);
+    throw error;
+  }
+};
 
 
 // Función para obtener la lista de personajes en Home
@@ -104,6 +121,7 @@ export const getPlanetsHome = async () => {
 export default {
   getCharacters,
   getPlanets,
+  getVehicles,
   getCharactersHome,
   getVehiclesHome,
   getPlanetsHome,

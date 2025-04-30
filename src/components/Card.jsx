@@ -17,10 +17,15 @@ export const Card = ({ name, uid, type }) => {
     return `https://raw.githubusercontent.com/tbone849/star-wars-guide/refs/heads/master/build/assets/img/vehicles/${vehiclesId}.jpg`;
   };
   
-  const getUrlImgPlanets = (planetsId) => {
-    return `https://raw.githubusercontent.com/tbone849/star-wars-guide/refs/heads/master/build/assets/img/planets/${planetsId}.jpg`;
+  const getUrlImgPlanets = (id) => {
+    if (id === "1") {
+      return "https://upload.wikimedia.org/wikipedia/en/6/6d/Tatooine_%28fictional_desert_planet%29.jpg";
+    } else {
+      return `https://raw.githubusercontent.com/tbone849/star-wars-guide/refs/heads/master/build/assets/img/planets/${id}.jpg`;
+    }
   };
-
+  
+  
   // Determinar URL de imagen según el tipo (en este caso personajes, vehiculos, planetas)
   let imgSrc;
   switch (type) {
@@ -64,7 +69,7 @@ export const Card = ({ name, uid, type }) => {
         src={imgSrc}
         alt={`${name} image`}
         onClick={() => navigate(`/${type}/${uid}`)}
-        style={{ cursor: "pointer", objectFit: "cover", height: "250px" }}
+        style={{ cursor: "pointer", objectFit: "cover", height: "auto", width: "100%" }}
         onError={(e) => {
           e.target.onerror = null;
           e.target.src = "https://placehold.co/400?text=No+Image";

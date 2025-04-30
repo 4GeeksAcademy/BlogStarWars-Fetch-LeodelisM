@@ -92,7 +92,6 @@ const Navbar = () => {
         </button>
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav me-auto">
-            {/* Enlaces convertidos en botones */}
             <li className="nav-item mx-1">
               <Link className="btn btn-outline-warning" to="/">Home</Link>
             </li>

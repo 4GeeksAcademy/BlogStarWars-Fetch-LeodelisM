@@ -1,98 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Card } from './Card';
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
-import apiClient from '../apiClient';
+import { useActions } from "../store.js";
 
 export const CardList = () => {
-  const { store, actions } = useGlobalReducer();
-  const [loading, setLoading] = useState({
-    characters: false,
-    vehicles: false,
-    planets: false
-  });
-  const [error, setError] = useState({
-    characters: null,
-    vehicles: null,
-    planets: null
-  });
+  const { store, dispatch } = useGlobalReducer();
+  const actions = useActions(dispatch);
   
-  // Estado para cada tipo de datos
-  const [characters, setCharacters] = useState([]);
-  const [vehicles, setVehicles] = useState([]);
-  const [planets, setPlanets] = useState([]);
-  
-  // Función genérica para cargar datos
-  const loadData = async (type) => {
-    // Actualizamos el estado de carga solo para este tipo
-    setLoading(prev => ({ ...prev, [type]: true }));
-    setError(prev => ({ ...prev, [type]: null }));
-    
-    let apiMethod;
-    let setterFunction;
-    
-    // Configuramos la función API y el setter según el tipo
-    switch(type) {
-      case 'characters':
-        apiMethod = apiClient.getCharactersHome;
-        setterFunction = setCharacters;
-        break;
-      case 'vehicles':
-        apiMethod = apiClient.getVehiclesHome;
-        setterFunction = setVehicles;
-        break;
-      case 'planets':
-        apiMethod = apiClient.getPlanetsHome;
-        setterFunction = setPlanets;
-        break;
-      default:
-        return;
-    }
-    
-    try {
-      // Asumimos que llamamos a la página 1 sin paginación
-      const response = await apiMethod(1);
-      
-      if (response && response.results) {
-        setterFunction(response.results);
-      } else {
-        // Intentar detectar resultados en diferentes formatos
-        const data = detectResults(response);
-        if (data) {
-          setterFunction(data);
-        } else {
-          setError(prev => ({ ...prev, [type]: `No se pudieron cargar los ${type}` }));
-        }
-      }
-    } catch (error) {
-      console.error(`Error al cargar ${type}:`, error);
-      setError(prev => ({ ...prev, [type]: `Error al conectar con la API para ${type}` }));
-    } finally {
-      setLoading(prev => ({ ...prev, [type]: false }));
-    }
-  };
-  
-  // Función auxiliar para detectar resultados en diferentes estructuras
-  const detectResults = (data) => {
-    if (!data) return null;
-    
-    if (data.results && Array.isArray(data.results)) return data.results;
-    if (data.data && Array.isArray(data.data)) return data.data;
-    if (Array.isArray(data)) return data;
-    
-    return null;
-  };
+  // Extraemos los datos del store global
+  const { characters, vehicles, planets, loading, error } = store;
   
   // Cargar datos al montar el componente
   useEffect(() => {
-    loadData('characters');
-    loadData('vehicles');
-    loadData('planets');
+    actions.loadCharacters();
+    actions.loadVehicles();
+    actions.loadPlanets();
   }, []);
   
   // Componente para mostrar el carrusel
   const renderCarousel = (type, items) => {
-    const isLoading = loading[type];
-    const hasError = error[type];
+    const isLoading = loading;
+    const hasError = error;
     
     // Si está cargando, mostrar indicador
     if (isLoading) {
@@ -111,7 +39,22 @@ export const CardList = () => {
       return (
         <div className="my-4 text-center">
           <div className="alert alert-danger" role="alert">{hasError}</div>
-          <button className="btn btn-primary" onClick={() => loadData(type)}>
+          <button 
+            className="btn btn-primary" 
+            onClick={() => {
+              switch(type) {
+                case 'characters':
+                  actions.loadCharacters();
+                  break;
+                case 'vehicles':
+                  actions.loadVehicles();
+                  break;
+                case 'planets':
+                  actions.loadPlanets();
+                  break;
+              }
+            }}
+          >
             Intentar de nuevo
           </button>
         </div>

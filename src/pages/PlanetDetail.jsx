@@ -1,51 +1,46 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import useGlobalReducer from '../hooks/useGlobalReducer.jsx';
 import { useActions } from '../store.js';
 import Loader from '../components/Loader';
 
-export const CharacterDetail = () => {
-  // Obtener el ID del personaje de la URL y el navigate para redireccionar
+export const PlanetDetail = () => {
+  // Obtener el ID del planeta de la URL
   const { id } = useParams();
-
-  const navigate = useNavigate();
-  
+ 
   // Estados locales para manejar carga, error y datos
-  const [character, setCharacter] = useState(null);
-
+  const [planet, setPlanet] = useState(null);
   const [loading, setLoading] = useState(true);
-
   const [error, setError] = useState(null);
   
   // Acceder al estado global y dispatch
   const { store, dispatch } = useGlobalReducer();
-  
   const actions = useActions(dispatch);
 
-  // Verificar si el personaje está en favoritos
+  // Verificar si el planeta está en favoritos
   const isFavorite = store.favorites.some(fav => 
-    fav.uid === id && fav.type === "characters"
+    fav.uid === id && fav.type === "planets"
   );
   
-  // Obtener URL de la imagen del personaje
-  const imgUrl = actions.getUrlImgCharacter(id);
+  // Obtener URL de la imagen del planeta con operador ternario para planeta ID 1, porque no tiene imagen
+  const imgUrl = id === "1" 
+    ? "https://static.wikia.nocookie.net/esstarwars/images/b/b0/Tatooine_TPM.png" 
+    : actions.getUrlImgPlanets(id);
   
-  // Función para obtener datos del personaje
+  // Función para obtener datos del planeta
   useEffect(() => {
-    const fetchCharacter = async () => {
-
+    const fetchPlanet = async () => {
       try {
-
         setLoading(true);
-        // Llamada a la API
-        const response = await fetch(`https://www.swapi.tech/api/people/${id}`);
+        // Llamada a la API, la llame directamente no desde apiClient
+        const response = await fetch(`https://www.swapi.tech/api/planets/${id}`);
         
         if (!response.ok) {
-          throw new Error('No se pudo obtener la información del personaje');
+          throw new Error('No se pudo obtener la información del planeta');
         }
         
         const data = await response.json();
-        setCharacter(data.result);
+        setPlanet(data.result);
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -53,19 +48,19 @@ export const CharacterDetail = () => {
       }
     };
     
-    fetchCharacter();
+    fetchPlanet();
   }, [id]);
   
   // Función para manejar favoritos
   const handleToggleFavorite = () => {
     if (isFavorite) {
-      actions.removeFavorite(id, "characters");
+      actions.removeFavorite(id, "planets");
     } else {
-      if (character) {
+      if (planet) {
         actions.addFavorite({
           uid: id,
-          type: "characters",
-          name: character.properties.name,
+          type: "planets",
+          name: planet.properties.name,
           imgUrl: imgUrl
         });
       }
@@ -89,23 +84,20 @@ export const CharacterDetail = () => {
   }
   
   // Si no hay datos
-  if (!character) {
+  if (!planet) {
     return (
       <div className="alert alert-warning my-3" role="alert">
-        No se encontró información para este personaje.
+        No se encontró información para este planeta.
       </div>
     );
   }
   
-  // Renderizado normal con datos
   return (
     <div className="container-fluid px-4 mt-5" style={{ maxWidth: "1350px", margin: "0 auto" }}>
-      {/* Tarjeta con borde exterior */}
       <div className="card border" style={{ borderRadius: "16px", boxShadow: "0 4px 8px rgba(0,0,0,0.1)" }}>
-        {/* Encabezado con nombre y estrella */}
         <div className="card-header bg-dark text-white d-flex justify-content-between align-items-center" 
              style={{ borderRadius: "16px 16px 0 0", border: "2px solid #FFC107" }}>
-          <h2 className="mb-0">{character.properties.name}</h2>
+          <h2 className="mb-0">{planet.properties.name}</h2>
           <button
             type="button"
             className="btn"
@@ -128,67 +120,50 @@ export const CharacterDetail = () => {
             <div className="col-md-4 mb-3">
               <img 
                 src={imgUrl} 
-                alt={character.properties.name}
+                alt={planet.properties.name}
                 className="img-fluid rounded" 
-                style={{ maxHeight: "400px", objectFit: "cover" }}
+                style={{ maxHeight: "400px", objectFit: "cover", width: "100%" }}
                 onError={(e) => {
                   e.target.onerror = null;
-                  e.target.src = `https://placehold.co/400?text=${encodeURIComponent(character.properties.name)}`
+                  e.target.src = `https://placehold.co/400?text=${encodeURIComponent(planet.properties.name)}`;
                 }}
               />
             </div>
             <div className="col-md-8">
-              <h4 className="mb-3">Información del personaje</h4>
+              <h4 className="mb-3">Información del planeta</h4>
               <table className="table">
                 <tbody>
                   <tr>
-                    <th>Género:</th>
-                    <td>{character.properties.gender}</td>
+                    <th>Diámetro:</th>
+                    <td>{planet.properties.diameter} km</td>
                   </tr>
                   <tr>
-                    <th>Año de nacimiento:</th>
-                    <td>{character.properties.birth_year}</td>
+                    <th>Periodo de rotación:</th>
+                    <td>{planet.properties.rotation_period} horas</td>
                   </tr>
                   <tr>
-                    <th>Altura:</th>
-                    <td>{character.properties.height} cm</td>
+                    <th>Periodo orbital:</th>
+                    <td>{planet.properties.orbital_period} días</td>
                   </tr>
                   <tr>
-                    <th>Peso:</th>
-                    <td>{character.properties.mass} kg</td>
+                    <th>Gravedad:</th>
+                    <td>{planet.properties.gravity}</td>
                   </tr>
                   <tr>
-                    <th>Color de ojos:</th>
-                    <td>{character.properties.eye_color}</td>
+                    <th>Población:</th>
+                    <td>{planet.properties.population}</td>
                   </tr>
                   <tr>
-                    <th>Color de pelo:</th>
-                    <td>{character.properties.hair_color}</td>
+                    <th>Clima:</th>
+                    <td>{planet.properties.climate}</td>
                   </tr>
                   <tr>
-                    <th>Color de piel:</th>
-                    <td>{character.properties.skin_color}</td>
+                    <th>Terreno:</th>
+                    <td>{planet.properties.terrain}</td>
                   </tr>
                   <tr>
-                    <th>Planeta natal:</th>
-                    <td>
-                      {character.properties.homeworld && (
-                        <a 
-                          href="#"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            // Extraer el ID del planeta de la URL
-                            const planetId = character.properties.homeworld.split('/').pop();
-                            // Navegar al componente del planeta usando useNavigate
-                            navigate(`/planets/${planetId}`);
-                          }}
-                          className="text-primary"
-                          style={{textDecoration: "underline", cursor: "pointer"}}
-                        >
-                          Ver planeta natal
-                        </a>
-                      )}
-                    </td>
+                    <th>Agua superficial:</th>
+                    <td>{planet.properties.surface_water}%</td>
                   </tr>
                 </tbody>
               </table>

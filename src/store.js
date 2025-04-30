@@ -20,6 +20,7 @@ export default function storeReducer(store, action = {}) {
   console.log("Reducer procesando acción:", action.type, action.payload);
   
   switch (action.type) {
+
     case 'set_characters':
       return {
         ...store,
@@ -64,7 +65,7 @@ export default function storeReducer(store, action = {}) {
         return store; // No añadir si ya existe
       }
       
-      // Crear nueva lista de favoritos
+      // Crea nueva lista de favoritos
       const updatedFavorites = [...store.favorites, action.payload];
       
       // Guardar en localStorage
@@ -163,11 +164,11 @@ export const useActions = (dispatch) => {
     },
     
     getUrlImgVehicle: (uid) => {
-      return `https://starwars-visualguide.com/assets/img/vehicles/${uid}.jpg`;
+      return `https://raw.githubusercontent.com/tbone849/star-wars-guide/refs/heads/master/build/assets/img/vehicles/${uid}.jpg`;
     },
-    
-    getUrlImgPlanet: (uid) => {
-      return `https://starwars-visualguide.com/assets/img/planets/${uid}.jpg`;
+
+    getUrlImgPlanets: (uid) => {
+      return `https://raw.githubusercontent.com/tbone849/star-wars-guide/refs/heads/master/build/assets/img/planets/${uid}.jpg`;
     }
   };
 };

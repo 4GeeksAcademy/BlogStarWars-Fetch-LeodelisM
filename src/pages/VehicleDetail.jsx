@@ -1,51 +1,44 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import useGlobalReducer from '../hooks/useGlobalReducer.jsx';
 import { useActions } from '../store.js';
 import Loader from '../components/Loader';
 
-export const CharacterDetail = () => {
-  // Obtener el ID del personaje de la URL y el navigate para redireccionar
+export const VehicleDetail = () => {
+  // Obtener el ID del vehículo de la URL
   const { id } = useParams();
-
-  const navigate = useNavigate();
-  
+ 
   // Estados locales para manejar carga, error y datos
-  const [character, setCharacter] = useState(null);
-
+  const [vehicle, setVehicle] = useState(null);
   const [loading, setLoading] = useState(true);
-
   const [error, setError] = useState(null);
   
   // Acceder al estado global y dispatch
   const { store, dispatch } = useGlobalReducer();
-  
   const actions = useActions(dispatch);
 
-  // Verificar si el personaje está en favoritos
+  // URL de la imagen
+  const imgUrl = actions.getUrlImgVehicle(id)
+
+  // Verificar si el vehículo está en favoritos
   const isFavorite = store.favorites.some(fav => 
-    fav.uid === id && fav.type === "characters"
+    fav.uid === id && fav.type === "vehicles"
   );
   
-  // Obtener URL de la imagen del personaje
-  const imgUrl = actions.getUrlImgCharacter(id);
-  
-  // Función para obtener datos del personaje
+  // Función para obtener datos del vehículo
   useEffect(() => {
-    const fetchCharacter = async () => {
-
+    const fetchVehicle = async () => {
       try {
-
         setLoading(true);
         // Llamada a la API
-        const response = await fetch(`https://www.swapi.tech/api/people/${id}`);
+        const response = await fetch(`https://www.swapi.tech/api/vehicles/${id}`);
         
         if (!response.ok) {
-          throw new Error('No se pudo obtener la información del personaje');
+          throw new Error('No se pudo obtener la información del vehículo');
         }
         
         const data = await response.json();
-        setCharacter(data.result);
+        setVehicle(data.result);
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -53,19 +46,19 @@ export const CharacterDetail = () => {
       }
     };
     
-    fetchCharacter();
+    fetchVehicle();
   }, [id]);
   
   // Función para manejar favoritos
   const handleToggleFavorite = () => {
     if (isFavorite) {
-      actions.removeFavorite(id, "characters");
+      actions.removeFavorite(id, "vehicles");
     } else {
-      if (character) {
+      if (vehicle) {
         actions.addFavorite({
           uid: id,
-          type: "characters",
-          name: character.properties.name,
+          type: "vehicles",
+          name: vehicle.properties.name,
           imgUrl: imgUrl
         });
       }
@@ -89,23 +82,20 @@ export const CharacterDetail = () => {
   }
   
   // Si no hay datos
-  if (!character) {
+  if (!vehicle) {
     return (
       <div className="alert alert-warning my-3" role="alert">
-        No se encontró información para este personaje.
+        No se encontró información para este vehículo/nave.
       </div>
     );
   }
   
-  // Renderizado normal con datos
   return (
     <div className="container-fluid px-4 mt-5" style={{ maxWidth: "1350px", margin: "0 auto" }}>
-      {/* Tarjeta con borde exterior */}
       <div className="card border" style={{ borderRadius: "16px", boxShadow: "0 4px 8px rgba(0,0,0,0.1)" }}>
-        {/* Encabezado con nombre y estrella */}
         <div className="card-header bg-dark text-white d-flex justify-content-between align-items-center" 
              style={{ borderRadius: "16px 16px 0 0", border: "2px solid #FFC107" }}>
-          <h2 className="mb-0">{character.properties.name}</h2>
+          <h2 className="mb-0">{vehicle.properties.name}</h2>
           <button
             type="button"
             className="btn"
@@ -128,67 +118,58 @@ export const CharacterDetail = () => {
             <div className="col-md-4 mb-3">
               <img 
                 src={imgUrl} 
-                alt={character.properties.name}
+                alt={vehicle.properties.name}
                 className="img-fluid rounded" 
-                style={{ maxHeight: "400px", objectFit: "cover" }}
+                style={{ maxHeight: "400px", objectFit: "cover", width: "100%" }}
                 onError={(e) => {
                   e.target.onerror = null;
-                  e.target.src = `https://placehold.co/400?text=${encodeURIComponent(character.properties.name)}`
+                  e.target.src = `https://placehold.co/400?text=${encodeURIComponent(vehicle.properties.name)}`;
                 }}
               />
             </div>
             <div className="col-md-8">
-              <h4 className="mb-3">Información del personaje</h4>
+              <h4 className="mb-3">Información del vehículo</h4>
               <table className="table">
                 <tbody>
                   <tr>
-                    <th>Género:</th>
-                    <td>{character.properties.gender}</td>
+                    <th>Modelo:</th>
+                    <td>{vehicle.properties.model}</td>
                   </tr>
                   <tr>
-                    <th>Año de nacimiento:</th>
-                    <td>{character.properties.birth_year}</td>
+                    <th>Fabricante:</th>
+                    <td>{vehicle.properties.manufacturer}</td>
                   </tr>
                   <tr>
-                    <th>Altura:</th>
-                    <td>{character.properties.height} cm</td>
+                    <th>Clase:</th>
+                    <td>{vehicle.properties.vehicle_class}</td>
                   </tr>
                   <tr>
-                    <th>Peso:</th>
-                    <td>{character.properties.mass} kg</td>
+                    <th>Costo en créditos:</th>
+                    <td>{vehicle.properties.cost_in_credits}</td>
                   </tr>
                   <tr>
-                    <th>Color de ojos:</th>
-                    <td>{character.properties.eye_color}</td>
+                    <th>Longitud:</th>
+                    <td>{vehicle.properties.length} m</td>
                   </tr>
                   <tr>
-                    <th>Color de pelo:</th>
-                    <td>{character.properties.hair_color}</td>
+                    <th>Velocidad máxima:</th>
+                    <td>{vehicle.properties.max_atmosphering_speed} km/h</td>
                   </tr>
                   <tr>
-                    <th>Color de piel:</th>
-                    <td>{character.properties.skin_color}</td>
+                    <th>Tripulación:</th>
+                    <td>{vehicle.properties.crew}</td>
                   </tr>
                   <tr>
-                    <th>Planeta natal:</th>
-                    <td>
-                      {character.properties.homeworld && (
-                        <a 
-                          href="#"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            // Extraer el ID del planeta de la URL
-                            const planetId = character.properties.homeworld.split('/').pop();
-                            // Navegar al componente del planeta usando useNavigate
-                            navigate(`/planets/${planetId}`);
-                          }}
-                          className="text-primary"
-                          style={{textDecoration: "underline", cursor: "pointer"}}
-                        >
-                          Ver planeta natal
-                        </a>
-                      )}
-                    </td>
+                    <th>Pasajeros:</th>
+                    <td>{vehicle.properties.passengers}</td>
+                  </tr>
+                  <tr>
+                    <th>Capacidad de carga:</th>
+                    <td>{vehicle.properties.cargo_capacity} kg</td>
+                  </tr>
+                  <tr>
+                    <th>Consumibles:</th>
+                    <td>{vehicle.properties.consumables}</td>
                   </tr>
                 </tbody>
               </table>
@@ -199,3 +180,4 @@ export const CharacterDetail = () => {
     </div>
   );
 };
+

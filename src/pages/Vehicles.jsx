@@ -2,45 +2,35 @@ import React, { useEffect, useState } from "react";
 import Card from "../components/Card";
 import apiClient from "../apiClient";
 
-export const Planets = () => {
-  const [planets, setPlanets] = useState([]);
+export const Vehicles = () => {
+  const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Función para obtener URL de la imagen según el ID del planeta
-  const getImageUrl = (id) => {
-    // Manejo especial para planeta ID 1 (Tatooine), porque no tiene imagen
-    if (id === "1") {
-      return "https://upload.wikimedia.org/wikipedia/en/6/6d/Tatooine_%28fictional_desert_planet%29.jpg";
-    } else {
-      return `https://raw.githubusercontent.com/tbone849/star-wars-guide/refs/heads/master/build/assets/img/planets/${id}.jpg`;
-    }
-  };
-
-  // Cargar planetas al montar el componente
+  // Cargar vehículos/naves al montar el componente
   useEffect(() => {
-    const loadPlanets = async () => {
+    const loadVehicles = async () => {
       try {
         setLoading(true);
-        // Llamada a la API desde (apiClient)
-        const response = await apiClient.getPlanets();
+        // Llamada a la API (apiClient)
+        const response = await apiClient.getVehicles();
 
         if (response && response.results) {
-          setPlanets(response.results);
+          setVehicles(response.results);
         } else if (Array.isArray(response)) {
-          setPlanets(response);
+          setVehicles(response);
         } else {
-          setError("No se pudieron obtener los datos de planetas");
+          setError("No se pudieron obtener los datos de vehículos/naves");
         }
       } catch (err) {
-        console.error("Error al cargar planetas:", err);
-        setError("No se pudieron cargar los planetas");
+        console.error("Error al cargar vehículos/naves:", err);
+        setError("No se pudieron cargar los vehículos/nave");
       } finally {
         setLoading(false);
       }
     };
 
-    loadPlanets();
+    loadVehicles();
   }, []);
 
   if (loading) {
@@ -50,7 +40,7 @@ export const Planets = () => {
           <div className="spinner-border text-info" role="status">
             <span className="visually-hidden">Cargando...</span>
           </div>
-          <p className="mt-2">Cargando planetas...</p>
+          <p className="mt-2">Cargando vehículos/naves...</p>
         </div>
       </div>
     );
@@ -68,25 +58,26 @@ export const Planets = () => {
 
   return (
     <div className="container-fluid px-4 mt-4" style={{ maxWidth: "1350px", margin: "0 auto" }}>
+      {/* Contenedor de cards */}
       <div className="row g-4">
-        {planets.length > 0 ? (
-          planets.map((planet) => (
+        {vehicles.length > 0 ? (
+          vehicles.map((vehicle) => (
             <div
-              key={planet.uid}
+              key={vehicle.uid}
               className="col-12 col-md-6 col-lg-4 col-xl-3 mb-4"
             >
               <Card
-                name={planet.name}
-                uid={planet.uid}
-                type="planets"
-                img={getImageUrl(planet.uid)}
+                name={vehicle.name}
+                uid={vehicle.uid}
+                type="vehicles"
+                img={`https://starwars-visualguide.com/assets/img/vehicles/${vehicle.uid}.jpg`}
               />
             </div>
           ))
         ) : (
           <div className="col-12">
             <div className="alert alert-info">
-              No hay planetas disponibles
+              No hay vehículos/naves disponibles
             </div>
           </div>
         )}
