@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
 import Card from "../components/Card";
 import apiClient from "../apiClient";
+import Loader from "../components/Loader";
 
 export const Characters = () => {
   const [characters, setCharacters] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  
   // Cargar personajes al montar el componente
   useEffect(() => {
     const loadCharacters = async () => {
+
       try {
         setLoading(true);
         // Llamada a la API (apiClient)
@@ -17,35 +19,30 @@ export const Characters = () => {
 
         if (response && response.results) {
           setCharacters(response.results);
+
         } else if (Array.isArray(response)) {
           setCharacters(response);
+
         } else {
           setError("No se pudieron obtener los datos de personajes");
         }
+
       } catch (err) {
         console.error("Error al cargar personajes:", err);
         setError("No se pudieron cargar los personajes");
+        
       } finally {
         setLoading(false);
       }
     };
-
     loadCharacters();
   }, []);
-
+  
+  // Usar el componente Loader durante la carga
   if (loading) {
-    return (
-      <div className="container-fluid px-4" style={{ maxWidth: "1350px", margin: "0 auto" }}>
-        <div className="text-center my-5">
-          <div className="spinner-border text-info" role="status">
-            <span className="visually-hidden">Cargando...</span>
-          </div>
-          <p className="mt-2">Cargando personajes...</p>
-        </div>
-      </div>
-    );
+    return <Loader />;
   }
-
+  
   if (error) {
     return (
       <div className="container-fluid px-4" style={{ maxWidth: "1350px", margin: "0 auto" }}>
@@ -55,7 +52,7 @@ export const Characters = () => {
       </div>
     );
   }
-
+  
   return (
     <div className="container-fluid px-4 mt-4" style={{ maxWidth: "1350px", margin: "0 auto" }}>
       {/* Contenedor de cards */}
@@ -70,7 +67,6 @@ export const Characters = () => {
                 name={character.name}
                 uid={character.uid}
                 type="characters"
-                img={`https://raw.githubusercontent.com/tbone849/star-wars-guide/refs/heads/master/build/assets/img/characters/${character.uid}.jpg`}
               />
             </div>
           ))

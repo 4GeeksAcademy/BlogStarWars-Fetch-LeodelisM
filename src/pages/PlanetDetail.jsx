@@ -23,16 +23,15 @@ export const PlanetDetail = () => {
   );
   
   // Obtener URL de la imagen del planeta con operador ternario para planeta ID 1, porque no tiene imagen
-  const imgUrl = id === "1" 
-    ? "https://static.wikia.nocookie.net/esstarwars/images/b/b0/Tatooine_TPM.png" 
-    : actions.getUrlImgPlanets(id);
+  const imgUrl = actions.getUrlImgPlanets(id);
   
   // Función para obtener datos del planeta
   useEffect(() => {
     const fetchPlanet = async () => {
+      
       try {
         setLoading(true);
-        // Llamada a la API, la llame directamente no desde apiClient
+        // Llamada a la API, la llame directamente no desde (apiClient)
         const response = await fetch(`https://www.swapi.tech/api/planets/${id}`);
         
         if (!response.ok) {
@@ -42,6 +41,7 @@ export const PlanetDetail = () => {
         const data = await response.json();
         setPlanet(data.result);
         setLoading(false);
+        
       } catch (err) {
         setError(err.message);
         setLoading(false);
@@ -61,7 +61,6 @@ export const PlanetDetail = () => {
           uid: id,
           type: "planets",
           name: planet.properties.name,
-          imgUrl: imgUrl
         });
       }
     }

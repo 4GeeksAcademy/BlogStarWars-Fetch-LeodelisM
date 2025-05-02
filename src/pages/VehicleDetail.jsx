@@ -59,7 +59,6 @@ export const VehicleDetail = () => {
           uid: id,
           type: "vehicles",
           name: vehicle.properties.name,
-          imgUrl: imgUrl
         });
       }
     }

@@ -1,51 +1,49 @@
 import React, { useEffect, useState } from "react";
 import Card from "../components/Card";
 import apiClient from "../apiClient";
+import Loader from "../components/Loader";
 
 export const Vehicles = () => {
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  
   // Cargar vehículos/naves al montar el componente
   useEffect(() => {
     const loadVehicles = async () => {
       try {
+
         setLoading(true);
         // Llamada a la API (apiClient)
         const response = await apiClient.getVehicles();
-
         if (response && response.results) {
           setVehicles(response.results);
+
         } else if (Array.isArray(response)) {
           setVehicles(response);
+
         } else {
           setError("No se pudieron obtener los datos de vehículos/naves");
         }
+
       } catch (err) {
         console.error("Error al cargar vehículos/naves:", err);
+
         setError("No se pudieron cargar los vehículos/nave");
+      
       } finally {
+
         setLoading(false);
       }
     };
-
     loadVehicles();
   }, []);
-
+  
+  // Usar el componente Loader durante la carga
   if (loading) {
-    return (
-      <div className="container-fluid px-4" style={{ maxWidth: "1350px", margin: "0 auto" }}>
-        <div className="text-center my-5">
-          <div className="spinner-border text-info" role="status">
-            <span className="visually-hidden">Cargando...</span>
-          </div>
-          <p className="mt-2">Cargando vehículos/naves...</p>
-        </div>
-      </div>
-    );
+    return <Loader />;
   }
-
+  
   if (error) {
     return (
       <div className="container-fluid px-4" style={{ maxWidth: "1350px", margin: "0 auto" }}>
@@ -55,7 +53,7 @@ export const Vehicles = () => {
       </div>
     );
   }
-
+  
   return (
     <div className="container-fluid px-4 mt-4" style={{ maxWidth: "1350px", margin: "0 auto" }}>
       {/* Contenedor de cards */}
@@ -70,7 +68,6 @@ export const Vehicles = () => {
                 name={vehicle.name}
                 uid={vehicle.uid}
                 type="vehicles"
-                img={`https://starwars-visualguide.com/assets/img/vehicles/${vehicle.uid}.jpg`}
               />
             </div>
           ))

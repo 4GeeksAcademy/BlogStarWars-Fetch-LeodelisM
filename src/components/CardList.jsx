@@ -61,7 +61,7 @@ export const CardList = () => {
       );
     }
     
-    // Nombre en español para los títulos
+    // Función para los nombres en español para los títulos
     const typeNames = {
       characters: "Personajes",
       vehicles: "Vehículos",

@@ -8,41 +8,25 @@ export const Card = ({ name, uid, type }) => {
   const actions = useActions(dispatch);
   const navigate = useNavigate();
   
-  // Funciones para obtener URLs de imágenes directamente en el componente
-  const getUrlImgCharacter = (characterId) => {
-    return `https://raw.githubusercontent.com/tbone849/star-wars-guide/refs/heads/master/build/assets/img/characters/${characterId}.jpg`;
-  };
-  
-  const getUrlImgVehicles = (vehiclesId) => {
-    return `https://raw.githubusercontent.com/tbone849/star-wars-guide/refs/heads/master/build/assets/img/vehicles/${vehiclesId}.jpg`;
-  };
-  
-  const getUrlImgPlanets = (id) => {
-    if (id === "1") {
-      return "https://upload.wikimedia.org/wikipedia/en/6/6d/Tatooine_%28fictional_desert_planet%29.jpg";
-    } else {
-      return `https://raw.githubusercontent.com/tbone849/star-wars-guide/refs/heads/master/build/assets/img/planets/${id}.jpg`;
-    }
-  };
-  
-  
-  // Determinar URL de imagen según el tipo (en este caso personajes, vehiculos, planetas)
+  // Determinar URL de imagen usando las funciones del store
   let imgSrc;
   switch (type) {
+
     case "characters":
-      imgSrc = getUrlImgCharacter(uid);
+      imgSrc = actions.getUrlImgCharacter(uid);
       break;
+
     case "vehicles":
-      imgSrc = getUrlImgVehicles(uid);
+      imgSrc = actions.getUrlImgVehicle(uid); 
       break;
+
     case "planets":
-      imgSrc = getUrlImgPlanets(uid);
+      imgSrc = actions.getUrlImgPlanets(uid);
       break;
     default:
       imgSrc = "https://placehold.co/400x200"; 
   }
   
-  //Sección de Favoritos
   // Verificar si está en favoritos
   const isFavorite = store.favorites.some(fav => 
     fav.uid === uid && fav.type === type
@@ -50,14 +34,16 @@ export const Card = ({ name, uid, type }) => {
   
   // Función para añadir a favoritos
   const handleToggleFavorite = () => {
+
     if (isFavorite) {
       actions.removeFavorite(uid, type);
+
     } else {
+      // Guarda los datos necesarios
       actions.addFavorite({
         uid, 
         type, 
-        name,
-        imgUrl: imgSrc
+        name
       });
     }
   };
@@ -86,7 +72,6 @@ export const Card = ({ name, uid, type }) => {
             Ver detalles
           </button>
           
-          {/* Botón de estrella */}
           <button
             type="button"
             className="btn ms-2"

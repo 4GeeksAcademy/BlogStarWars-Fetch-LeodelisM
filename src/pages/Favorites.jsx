@@ -1,30 +1,30 @@
 import React, { useState } from 'react';
 import useGlobalReducer from '../hooks/useGlobalReducer.jsx';
-import Card from '../components/Card'; // Importamos el componente Card
-import { useActions } from '../store'; // Importación directa de useActions
+import Card from '../components/Card';
+import { useActions } from '../store';
 
 export const Favorites = () => {
   const { store, dispatch } = useGlobalReducer();
-  const actions = useActions(dispatch); // Obtenemos acciones directamente
-  
+  const actions = useActions(dispatch);
+ 
   // Estado para el filtro seleccionado
   const [filter, setFilter] = useState('all');
-  
+ 
   // Verificar si hay favoritos
   const hasFavorites = store.favorites && store.favorites.length > 0;
-  
+ 
   // Filtrar favoritos según la selección
   const filteredFavorites = hasFavorites
     ? filter === 'all'
       ? store.favorites
       : store.favorites.filter(item => item.type === filter)
     : [];
-  
+ 
   // Manejar el cambio de filtro
   const handleFilterChange = (e) => {
     setFilter(e.target.value);
   };
-  
+ 
   return (
     <div className="container my-5">
       <h1 className="mb-4">Mis Favoritos</h1>
@@ -38,10 +38,10 @@ export const Favorites = () => {
                 <label htmlFor="typeFilter" className="col-form-label">Filtrar por tipo:</label>
               </div>
               <div className="col-md-8">
-                <select 
-                  id="typeFilter" 
-                  className="form-select" 
-                  value={filter} 
+                <select
+                  id="typeFilter"
+                  className="form-select"
+                  value={filter}
                   onChange={handleFilterChange}
                 >
                   <option value="all">Todos</option>
@@ -52,17 +52,16 @@ export const Favorites = () => {
               </div>
             </div>
           </div>
-          
+         
           {/* Lista de favoritos */}
           {filteredFavorites.length > 0 ? (
             <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
               {filteredFavorites.map((favorite) => (
                 <div className="col" key={`${favorite.type}-${favorite.uid}`}>
-                  <Card 
-                    name={favorite.name || 'Sin nombre'} 
-                    uid={favorite.uid} 
+                  <Card
+                    name={favorite.name || 'Sin nombre'}
+                    uid={favorite.uid}
                     type={favorite.type}
-                    img={favorite.imgUrl}
                   />
                 </div>
               ))}

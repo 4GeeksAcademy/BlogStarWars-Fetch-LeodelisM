@@ -1,61 +1,48 @@
 import React, { useEffect, useState } from "react";
 import Card from "../components/Card";
 import apiClient from "../apiClient";
+import Loader from "../components/Loader";
 
 export const Planets = () => {
   const [planets, setPlanets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // Función para obtener URL de la imagen según el ID del planeta
-  const getImageUrl = (id) => {
-    // Manejo especial para planeta ID 1 (Tatooine), porque no tiene imagen
-    if (id === "1") {
-      return "https://upload.wikimedia.org/wikipedia/en/6/6d/Tatooine_%28fictional_desert_planet%29.jpg";
-    } else {
-      return `https://raw.githubusercontent.com/tbone849/star-wars-guide/refs/heads/master/build/assets/img/planets/${id}.jpg`;
-    }
-  };
-
+  
   // Cargar planetas al montar el componente
   useEffect(() => {
     const loadPlanets = async () => {
+
       try {
         setLoading(true);
         // Llamada a la API desde (apiClient)
         const response = await apiClient.getPlanets();
-
+        
         if (response && response.results) {
           setPlanets(response.results);
+
         } else if (Array.isArray(response)) {
           setPlanets(response);
+
         } else {
           setError("No se pudieron obtener los datos de planetas");
         }
+
       } catch (err) {
         console.error("Error al cargar planetas:", err);
         setError("No se pudieron cargar los planetas");
+
       } finally {
         setLoading(false);
       }
     };
-
     loadPlanets();
   }, []);
-
+  
+  // Usar el componente Loader durante la carga
   if (loading) {
-    return (
-      <div className="container-fluid px-4" style={{ maxWidth: "1350px", margin: "0 auto" }}>
-        <div className="text-center my-5">
-          <div className="spinner-border text-info" role="status">
-            <span className="visually-hidden">Cargando...</span>
-          </div>
-          <p className="mt-2">Cargando planetas...</p>
-        </div>
-      </div>
-    );
+    return <Loader />;
   }
-
+  
   if (error) {
     return (
       <div className="container-fluid px-4" style={{ maxWidth: "1350px", margin: "0 auto" }}>
@@ -65,7 +52,7 @@ export const Planets = () => {
       </div>
     );
   }
-
+  
   return (
     <div className="container-fluid px-4 mt-4" style={{ maxWidth: "1350px", margin: "0 auto" }}>
       <div className="row g-4">
@@ -79,7 +66,6 @@ export const Planets = () => {
                 name={planet.name}
                 uid={planet.uid}
                 type="planets"
-                img={getImageUrl(planet.uid)}
               />
             </div>
           ))

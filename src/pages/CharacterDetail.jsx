@@ -5,7 +5,8 @@ import { useActions } from '../store.js';
 import Loader from '../components/Loader';
 
 export const CharacterDetail = () => {
-  // Obtener el ID del personaje de la URL y el navigate para redireccionar
+  // Obtener el ID del personaje de la URL
+  // Navegar al componente del planeta usando useNavigate (porque hay un dato que trae URL)
   const { id } = useParams();
 
   const navigate = useNavigate();
@@ -37,7 +38,7 @@ export const CharacterDetail = () => {
       try {
 
         setLoading(true);
-        // Llamada a la API
+        // Llamada a la API directamente no desde (apiClient)
         const response = await fetch(`https://www.swapi.tech/api/people/${id}`);
         
         if (!response.ok) {
@@ -66,7 +67,6 @@ export const CharacterDetail = () => {
           uid: id,
           type: "characters",
           name: character.properties.name,
-          imgUrl: imgUrl
         });
       }
     }

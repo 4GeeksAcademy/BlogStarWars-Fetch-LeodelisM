@@ -1,6 +1,6 @@
 export const initialStore = () => {
   // Cargar favoritos guardados en localStorage
-  // en localStorage los datos persisten
+  // en localStorage los "datos persisten"
   const savedFavorites = localStorage.getItem('favorites');
   //Esta función convierte una cadena de texto con formato JSON en un objeto JavaScript
   //Los datos en localStorage siempre se guardan como strings, pero favoritos es uj array de objetos
@@ -17,7 +17,6 @@ export const initialStore = () => {
 };
 
 export default function storeReducer(store, action = {}) {
-  console.log("Reducer procesando acción:", action.type, action.payload);
   
   switch (action.type) {
 
@@ -83,8 +82,6 @@ export default function storeReducer(store, action = {}) {
         fav => !(String(fav.uid) === String(action.payload.uid) && fav.type === action.payload.type)
       );
       
-      console.log("Favoritos después:", filteredFavorites);
-      
       // Guardar en localStorage
       localStorage.setItem('favorites', JSON.stringify(filteredFavorites));
       
@@ -92,9 +89,9 @@ export default function storeReducer(store, action = {}) {
         ...store,
         favorites: filteredFavorites
       };
-    
-    case 'clear_favorites':
+
       // Eliminar todos los favoritos
+    case 'clear_favorites':
       localStorage.removeItem('favorites');
       
       return {
@@ -168,7 +165,11 @@ export const useActions = (dispatch) => {
     },
 
     getUrlImgPlanets: (uid) => {
-      return `https://raw.githubusercontent.com/tbone849/star-wars-guide/refs/heads/master/build/assets/img/planets/${uid}.jpg`;
+      if (uid === "1") {
+        return "https://upload.wikimedia.org/wikipedia/en/6/6d/Tatooine_%28fictional_desert_planet%29.jpg";
+      } else {
+        return `https://raw.githubusercontent.com/tbone849/star-wars-guide/refs/heads/master/build/assets/img/planets/${uid}.jpg`;
+      }
     }
   };
 };
